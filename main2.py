@@ -4,7 +4,11 @@ import pyautogui
 from ultralytics import YOLO
 import cvzone
 
-model = YOLO("best2.pt") 
+yoloModel = "best2.pt"
+myVideoUse = "Med.mp4"
+myFileUse = "coco2.txt"
+
+model = YOLO(yoloModel) 
 
 def RGB(event, x, y, flags, param):
     if event == cv2.EVENT_MOUSEMOVE :  
@@ -14,18 +18,21 @@ def RGB(event, x, y, flags, param):
 cv2.namedWindow('RGB')
 cv2.setMouseCallback('RGB', RGB)
 
-cap = cv2.VideoCapture("pm.mp4") 
+cap = cv2.VideoCapture(myVideoUse) 
 
-my_file = open("coco2.txt", 'r')
+my_file = open(myFileUse, 'r')
 data = my_file.read()
 class_list = data.split("\n") 
 
 count = 0
+video_finished = False
 
-while True:    
+while not video_finished:
     ret, frame = cap.read()
+    
     if not ret:
-        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        video_finished = True
+        # cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
         continue
 
     count += 1
@@ -46,10 +53,6 @@ while True:
         d = int(row[5])
         
         c = class_list[d]
-
-        # if "TrafficLight" in c:
-        #     cv2.rectangle(frame, (x1, y1), (x2, y2), (17, 249, 249), 2)
-        #     cvzone.putTextRect(frame, f'{c}', (x1, y1), 1, 1) 
             
         if "Knife" in c: 
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
