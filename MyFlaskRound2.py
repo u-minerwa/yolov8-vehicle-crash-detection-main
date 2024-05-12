@@ -11,7 +11,7 @@ import cvzone
 app = Flask(__name__)
 
 # Функция обработки видео для первой нейронной сети
-def process_network_1(video_file):
+def process_network_1(myVideoUse):
     # Здесь должна быть реализация вашей нейронной сети
     # В этом примере просто выводим длительность видео
     
@@ -137,19 +137,20 @@ def process_network_1(video_file):
     cap.release()  
     cv2.destroyAllWindows()
 
-    return len(video_file)
+    return len(myVideoUse)
 
 # По аналогии добавляем функции для остальных нейронных сетей...
 
 @app.route('/process_video', methods=['POST'])
 def process_video():
-    if 'video' not in request.files:
-        return jsonify({'error': 'No video file provided'}), 400
+    myVideo = "cr.mp4"
+    #if myVideo not in request.files:
+    #    return jsonify({'error': 'No video file provided aaaa!'}), 400
     
-    video_file = request.files['video']
+    #myVideoUse = request.files[myVideo]
     
     # Обработка видео каждой из нейронных сетей
-    result_1 = process_network_1(video_file)
+    result_1 = process_network_1(myVideo)
     # Аналогично для остальных нейронных сетей...
 
     # Возвращаем результаты обработки в формате JSON
