@@ -375,7 +375,7 @@ def process_network_4(video_file):
             cv2.destroyAllWindows()
 
     def main():
-        myVideo = "pm.mp4"
+        myVideo = "fall.mp4"
         myModel = "fall_det_1.pt"
         
         model_path = myModel
@@ -393,7 +393,7 @@ def process_network_4(video_file):
 
 @app.route('/leshafall', methods=['POST'])
 def leshafall():
-    myVideo = "pm.mp4"
+    myVideo = "fall.mp4"
     
     # Обработка видео каждой из нейронных сетей
     result_4 = process_network_4(myVideo)
@@ -401,7 +401,7 @@ def leshafall():
 
     # Возвращаем результаты обработки в формате JSON
     return jsonify({
-        'result_3': result_4,
+        'result_4': result_4,
         # Добавьте результаты для остальных нейронных сетей...
     })
 
