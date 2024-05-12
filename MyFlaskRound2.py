@@ -3,11 +3,12 @@ from flask import Flask, request, jsonify
 import cv2, pyautogui
 import pandas as pd
 import numpy as np 
+import datetime
 from datetime import datetime
 from ultralytics import YOLO
 import cvzone
 from sort import Sort
-import math, time
+import math, time, os
 
 app = Flask(__name__)
 
@@ -342,7 +343,68 @@ def process_network_3(myVideoUse):
     
     return len(myVideoUse)
 
+
+def process_network_4(video_file):
+    os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+
+    def initialize_model(model_path):
+        return YOLO(model_path)
+
+    def process_video(video_path, model):
+        cap = cv2.VideoCapture(video_path)
+        try:
+            while cap.isOpened():
+                success, frame = cap.read()
+                if not success:
+                    break
+
+                timestamp = datetime.now().strftime("12:05:01")
+                print(f"Processing frame at {timestamp}")
+
+                results = model.track(frame, persist=True, conf=0.5)
+                annotated_frame = results[0].plot()
+
+                cv2.imshow("YOLOv8 Tracking", annotated_frame)
+
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+                    break
+        except Exception as e:
+            print(f"Error processing video: {e}")
+        finally:
+            cap.release()
+            cv2.destroyAllWindows()
+
+    def main():
+        myVideo = "pm.mp4"
+        myModel = "fall_det_1.pt"
+        
+        model_path = myModel
+        video_path = myVideo
+        
+        model = initialize_model(model_path)
+        process_video(video_path, model)
+
+    if __name__ == "__main__":
+        main()
+
+    return len(video_file)
+
 #---------------------------------------------APP ROUTES--------------------------------------------------------------------#
+
+@app.route('/leshafall', methods=['POST'])
+def leshafall():
+    myVideo = "pm.mp4"
+    
+    # Обработка видео каждой из нейронных сетей
+    result_4 = process_network_4(myVideo)
+    # Аналогично для остальных нейронных сетей...
+
+    # Возвращаем результаты обработки в формате JSON
+    return jsonify({
+        'result_3': result_4,
+        # Добавьте результаты для остальных нейронных сетей...
+    })
+
 
 @app.route('/lesha', methods=['POST'])
 def lesha():
