@@ -45,9 +45,13 @@ def process_network_1(myVideoUse):
 
 
     def WindowVideo(event, x, y, flags, param):
-        if event == cv2.EVENT_MOUSEMOVE :  
+        if event == cv2.EVENT_MOUSEMOVE:  
             point = [x, y]
             print(point)
+            
+        if event == cv2.EVENT_KEYDOWN and chr(event & 0xFF) == 'q':
+            cap.release()       # Выключаем видео
+            cv2.destroyAllWindows()
 
 
     cv2.namedWindow("Video")
@@ -95,7 +99,7 @@ def process_network_1(myVideoUse):
             statistics[c] += 1
 
         # Отображаем статистику в окне
-        update_statistics_window(statistics)
+        # update_statistics_window(statistics)
 
         for index,row in px.iterrows():
             x1=int(row[0])
@@ -111,7 +115,7 @@ def process_network_1(myVideoUse):
                 font = cv2.FONT_HERSHEY_PLAIN
                 cv2.putText(frame, f'{c}', (x1, y1), font, 1.5, (0, 0, 255), 2, cv2.LINE_AA) 
                 
-                # Увеличиваем счетчик ДТП
+                # Увеличиваем счётчик аварий 
                 dtp_count += 1
                 
                 # Получаем текущую дату и время
@@ -138,7 +142,7 @@ def process_network_1(myVideoUse):
                 cvzone.putTextRect(frame,f'{c}',(x1,y1),1,1)
             
         cv2.imshow("Video", frame)
-        if cv2.waitKey(1)&0xFF==27:
+        if cv2.waitKey(1) & 0xFF==ord('q'):
             break
         
         
@@ -274,7 +278,8 @@ def process_network_2(myVideoUse):
 
         # Отображение кадра
         cv2.imshow("Image", img)
-        cv2.waitKey(1)
+        if cv2.waitKey(1) & 0xFF==ord('q'):
+            break
     
     cap.release()  
     cv2.destroyAllWindows()
@@ -340,7 +345,7 @@ def process_network_3(myVideoUse):
                 cvzone.putTextRect(frame, f'{c}', (x1, y1), 1, 1)
             
         cv2.imshow("RGB", frame)
-        if cv2.waitKey(1) & 0xFF == 27:
+        if cv2.waitKey(1) & 0xFF == ord('q'): 
             break
 
     cap.release()  
@@ -542,7 +547,8 @@ def process_network_5(myVideo):
                 print(frame_count)
             cv2.imshow("img", img)
 
-            cv2.waitKey(1)
+            if cv2.waitKey(1) & 0xFF==ord('q'):
+                break
         cv2.destroyAllWindows()
         
     return len(myVideo) 
