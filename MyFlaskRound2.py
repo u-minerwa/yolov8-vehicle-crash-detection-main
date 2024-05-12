@@ -82,7 +82,7 @@ def process_network_1(myVideoUse):
             continue
         
         frame = cv2.resize(frame,(1020,500))
-        results = model.predict(frame)          # a=results[0].boxes.data
+        results = model.predict(frame) 
         aa = results[0].boxes.data
         a = aa.cpu().detach().numpy()
         px = pd.DataFrame(a).astype("float")
@@ -191,7 +191,6 @@ def process_network_2(myVideoUse):
     # Список для хранения идентификаторов объектов, пересекших limits1
     object_ids1 = []
 
-
     # Основной цикл обработки видеопотока
     video_finished = False
     
@@ -255,12 +254,12 @@ def process_network_2(myVideoUse):
             cx, cy = x1 + w // 2, y1 + h // 2
             cv2.circle(img, (cx, cy), 5, (255, 0, 255), cv2.FILLED)
 
-            # Подсчет объектов, пересекающих границу области limits1
+            # Подсчёт объектов, пересекающих границу области limits1 
             if limits1[0] < cx < limits1[2] and limits1[1] - 15 < cy < limits1[1] + 15:
                 if id not in object_ids1:
                     object_ids1.append(id)
 
-            # Подсчет времени, проведенного в области limits2 для существующего объекта
+            # Подсчёт времени, проведенного в области limits2 для существующего объекта
             if limits2[0] < cx < limits2[4] and limits2[1] < cy < limits2[7]:
                 if id in object_times2:
                     if time.time() - object_times2[id] > 10:
@@ -455,16 +454,7 @@ def process_network_5(myVideo):
 
             return orig, class_no, co
 
-        def detect2(self, img):
-
-            # orig = img.copy()
-            # gray = cv2.cvtColor(orig, cv2.COLOR_BGR2GRAY)
-            # (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
-            # print("Max: " + str(maxVal))
-            # print("Min: " + str(minVal))
-
-            # if maxVal > 200 and minVal < 10:
-            #     print("Fire detected")
+        def detect2(self, img): 
 
             objects = self.model.predict(img, classes=[0], verbose=False, conf=0.5)
             fireObjects = objects[0].boxes.data
