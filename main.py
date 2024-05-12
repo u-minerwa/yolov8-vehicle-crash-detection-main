@@ -7,6 +7,7 @@ import cvzone
 
 model = YOLO("best.pt") 
 
+"""
 def update_statistics_window(statistics):
     # Создаём изображение для отображения статистики
     stat_image = 255 * np.ones((200, 300, 3), dtype=np.uint8)  # Белое изображение размером 200x300 
@@ -20,12 +21,16 @@ def update_statistics_window(statistics):
     # Отображаем изображение статистики
     cv2.imshow("Statistics", stat_image)
     cv2.waitKey(1)
-
+"""
 
 def WindowVideo(event, x, y, flags, param):
-    if event == cv2.EVENT_MOUSEMOVE :  
+    if event == cv2.EVENT_MOUSEMOVE:  
         point = [x, y]
         print(point)
+        
+    if event == cv2.EVENT_KEYDOWN and chr(event & 0xFF) == 'q':
+        cap.release()       # Выключаем видео
+        cv2.destroyAllWindows()
 
 
 cv2.namedWindow("Video")
@@ -42,8 +47,8 @@ dtp_count = 0  # Переменная для подсчёта количеств
 # Инициализируем статистику
 statistics = {'Accident': 0, 'TrafficLight': 0, 'Car': 0, 'Sign': 0}
 
-# Создаем окно для статистики
-cv2.namedWindow("Statistics") 
+# Создаём окно для статистики
+# cv2.namedWindow("Statistics") 
 
 video_finished = False
 
@@ -73,7 +78,9 @@ while not video_finished:
         statistics[c] += 1
 
     # Отображаем статистику в окне
-    update_statistics_window(statistics)
+    stats_text = f"Accident: {statistics['Accident']}, TrafficLight: {statistics['TrafficLight']}, Car: {statistics['Car']}, Sign: {statistics['Sign']}"
+    cv2.putText(frame, stats_text, (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+    #update_statistics_window(statistics)
 
     for index,row in px.iterrows():
         x1=int(row[0])
@@ -116,10 +123,10 @@ while not video_finished:
             cvzone.putTextRect(frame,f'{c}',(x1,y1),1,1)
         
     cv2.imshow("Video", frame)
-    if cv2.waitKey(1)&0xFF==27:
+    if cv2.waitKey(1) & 0xFF == ord("q"):
         break
-    
-    
+
+
 cap.release()  
 cv2.destroyAllWindows()
 
