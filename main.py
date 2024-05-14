@@ -83,10 +83,12 @@ while not video_finished:
             
             # Увеличиваем счётчик ДТП:
             dtp_count += 1
-            accidCount +=1
+            accidCount += 1
             print("Accident count:", accidCount)
             if accidCount==1:
                 total_accident_frames += 1
+                #cv2.imshow("Accident Frame"+f"{total_accident_frames}", frame)
+                #cv2.waitKey(1)
             
             # Получаем текущую дату и время
             now = datetime.now()
@@ -109,7 +111,7 @@ while not video_finished:
         accidCount = 0
     
     cv2.imshow("Video", frame)
-    if cv2.waitKey(10) & 0xFF == ord("q"):
+    if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
 
