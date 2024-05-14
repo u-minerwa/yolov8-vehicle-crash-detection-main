@@ -90,8 +90,8 @@ while not video_finished:
             print("Accident count:", accidCount)
             if accidCount==1:
                 total_accident_frames += 1
-                #cv2.imshow("Accident Frame"+f"{total_accident_frames}", frame)
-                #cv2.waitKey(1)
+                cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
+                cv2.waitKey(1)
             
             # Получаем текущую дату и время
             now = datetime.now()

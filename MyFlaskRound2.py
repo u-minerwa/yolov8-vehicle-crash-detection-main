@@ -106,7 +106,7 @@ def process_network_1(myVideoUse):
                 accidCount += 1 
                 if accidCount==1:
                     total_accident_frames += 1
-                    #cv2.imshow("Accident Frame"+f"{total_accident_frames}", frame)
+                    #cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
                     #cv2.waitKey(1)
                 
                 # Получаем текущую дату и время
@@ -605,10 +605,9 @@ def vlad():
 @app.route('/process_video', methods=['POST'])
 def process_video():
     myVideo = "cr.mp4"
-    #if myVideo not in request.files:
-    #    return jsonify({'error': 'No video file provided aaaa!'}), 400
-    
-    #myVideoUse = request.files[myVideo]
+    # myVideoUse = request.files[myVideo]
+    # if myVideo not in request.files:
+    #     return jsonify({'error': 'No video file provided aaaa!'}), 400
     
     # Обработка видео каждой из нейронных сетей
     result_1 = process_network_1(myVideo)
