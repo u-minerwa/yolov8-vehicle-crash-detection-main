@@ -29,6 +29,7 @@ my_file = open(myFileUse, 'r')
 data = my_file.read()
 class_list = data.split("\n")
 
+waitKeyKoef = 1
 count = 0 
 accidCount = 0
 dtp_count = 0  # Переменная для подсчёта количества ДТП 
@@ -91,7 +92,7 @@ while not video_finished:
             if accidCount==1:
                 total_accident_frames += 1
                 cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
-                cv2.waitKey(1)
+                cv2.waitKey(waitKeyKoef)
             
             # Получаем текущую дату и время
             now = datetime.now()
@@ -114,7 +115,7 @@ while not video_finished:
         accidCount = 0
     
     cv2.imshow("Video", frame)
-    if cv2.waitKey(1) & 0xFF == ord("q"):
+    if cv2.waitKey(waitKeyKoef) & 0xFF == ord("q"):
         break
 
 
