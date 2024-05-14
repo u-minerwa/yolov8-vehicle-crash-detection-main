@@ -4,24 +4,9 @@ import numpy as np
 from datetime import datetime
 from ultralytics import YOLO
 import cvzone
+import upd_stat_window
 
 model = YOLO("best.pt") 
-
-"""
-def update_statistics_window(statistics):
-    # Создаём изображение для отображения статистики
-    stat_image = 255 * np.ones((200, 300, 3), dtype=np.uint8)  # Белое изображение размером 200x300 
-
-    # Добавляем текст статистики на изображение
-    cv2.putText(stat_image, f"Accident: {statistics['Accident']}", (10, 30), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 0), 2)
-    cv2.putText(stat_image, f"TrafficLight: {statistics['TrafficLight']}", (10, 60), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 0), 2)
-    cv2.putText(stat_image, f"Car: {statistics['Car']}", (10, 90), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 0), 2)
-    cv2.putText(stat_image, f"Sign: {statistics['Sign']}", (10, 120), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 0), 2) 
-
-    # Отображаем изображение статистики
-    cv2.imshow("Statistics", stat_image)
-    cv2.waitKey(1)
-"""
 
 def WindowVideo(event, x, y, flags, param):
     if event == cv2.EVENT_MOUSEMOVE:  
@@ -29,7 +14,7 @@ def WindowVideo(event, x, y, flags, param):
         print(point)
         
     if event == cv2.EVENT_KEYDOWN and chr(event & 0xFF) == 'q':
-        cap.release()       # Выключаем видео
+        cap.release()  # Выключаем видео
         cv2.destroyAllWindows()
 
 
@@ -42,14 +27,12 @@ data = my_file.read()
 class_list = data.split("\n")
 
 count = 0 
+accidCount = 0
 dtp_count = 0  # Переменная для подсчёта количества ДТП 
+total_accident_frames = 0  # Общее количество кадров с авариями
 
-# Инициализируем статистику
-statistics = {'Accident': 0, 'TrafficLight': 0, 'Car': 0, 'Sign': 0}
-
-# Создаём окно для статистики
-# cv2.namedWindow("Statistics") 
-
+# Инициализируем статистику:
+statistics = {'Accident': 0, 'TrafficLight': 0, 'Car': 0, 'Sign': 0, 'TotalAccidents': 0} 
 video_finished = False
 
 while not video_finished:    
@@ -65,22 +48,22 @@ while not video_finished:
         continue
     
     frame = cv2.resize(frame,(1020,500))
-    results = model.predict(frame)          # a=results[0].boxes.data
+    results = model.predict(frame)
     aa = results[0].boxes.data
     a = aa.cpu().detach().numpy()
     px = pd.DataFrame(a).astype("float")
 
     # Считаем количество объектов
-    statistics = {'Accident': 0, 'TrafficLight': 0, 'Car': 0, 'Sign': 0}
+    statistics = {'Accident': 0, 'TrafficLight': 0, 'Car': 0, 'Sign': 0, 'TotalAccidents': 0} 
     for index, row in px.iterrows():
         d = int(row[5])
         c = class_list[d]
         statistics[c] += 1
 
     # Отображаем статистику в окне
-    stats_text = f"Accident: {statistics['Accident']}, TrafficLight: {statistics['TrafficLight']}, Car: {statistics['Car']}, Sign: {statistics['Sign']}"
+    stats_text = f"Accident: {statistics['Accident']}, TrafficLight: {statistics['TrafficLight']}, Car: {statistics['Car']}, Sign: {statistics['Sign']}, TotalAccidents: {total_accident_frames}" 
     cv2.putText(frame, stats_text, (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
-    #update_statistics_window(statistics)
+    has_accident = False  # Переменная для отслеживания наличия аварии в текущем кадре
 
     for index,row in px.iterrows():
         x1=int(row[0])
@@ -92,24 +75,23 @@ while not video_finished:
         c=class_list[d]
         
         if "Accident" in c:
-            cv2.rectangle(frame,(x1,y1),(x2,y2),(0,0,255),2)        #cvzone.putTextRect(frame,f'{c}',(x1,y1),1,1) 
+            has_accident = True
+            cv2.rectangle(frame,(x1,y1),(x2,y2),(0,0,255),2) 
+            #cvzone.putTextRect(frame,f'{c}',(x1,y1),1,1) 
             font = cv2.FONT_HERSHEY_PLAIN
             cv2.putText(frame, f'{c}', (x1, y1), font, 1.5, (0, 0, 255), 2, cv2.LINE_AA) 
             
-            # Увеличиваем счетчик ДТП
+            # Увеличиваем счётчик ДТП:
             dtp_count += 1
+            accidCount +=1
+            print("Accident count:", accidCount)
+            if accidCount==1:
+                total_accident_frames += 1
             
             # Получаем текущую дату и время
             now = datetime.now()
             dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
-            
-            # Сохраняем кадр с ДТП в файл с датой и временем в названии
-            # cv2.imwrite(f"AccidentFrames/accident_frame_{dt_string}_{dtp_count}.png", frame)
-            
-            # Сохраняем кадр с ДТП в файл
-            # cv2.imwrite(f"AccidentFrames/accident_frame_{dtp_count}.png", frame)
-            # cv2.imwrite("AccidentFrames/accident_frame.png", frame)
-            
+        
         if "TrafficLight" in c:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(17,249,249),2)
             cvzone.putTextRect(frame,f'{c}',(x1,y1),1,1) 
@@ -122,11 +104,16 @@ while not video_finished:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(230,240,100),2)
             cvzone.putTextRect(frame,f'{c}',(x1,y1),1,1)
         
+    # Если в текущем кадре не обнаружено аварии, обнуляем счётчик: 
+    if not has_accident:
+        accidCount = 0
+    
     cv2.imshow("Video", frame)
-    if cv2.waitKey(1) & 0xFF == ord("q"):
+    if cv2.waitKey(10) & 0xFF == ord("q"):
         break
 
 
 cap.release()  
+print("Total accident frames:", total_accident_frames)
 cv2.destroyAllWindows()
 
