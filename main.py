@@ -6,7 +6,10 @@ from ultralytics import YOLO
 import cvzone
 import upd_stat_window
 
-model = YOLO("best.pt") 
+yoloModel = "best.pt"
+myVideoUse = "cr.mp4"
+myFileUse = "coco1.txt"
+model = YOLO(yoloModel) 
 
 def WindowVideo(event, x, y, flags, param):
     if event == cv2.EVENT_MOUSEMOVE:  
@@ -20,9 +23,9 @@ def WindowVideo(event, x, y, flags, param):
 
 cv2.namedWindow("Video")
 cv2.setMouseCallback("Video", WindowVideo)
-cap = cv2.VideoCapture("cr.mp4") 
+cap = cv2.VideoCapture(myVideoUse) 
 
-my_file = open("coco1.txt", 'r')
+my_file = open(myFileUse, 'r')
 data = my_file.read()
 class_list = data.split("\n")
 
