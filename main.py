@@ -16,7 +16,7 @@ def WindowVideo(event, x, y, flags, param):
         point = [x, y]
         print(point)
         
-    if event == cv2.EVENT_KEYDOWN and chr(event & 0xFF) == 'q':
+    if chr(event & 0xFF) == 'q': 
         cap.release()  # Выключаем видео
         cv2.destroyAllWindows()
 
