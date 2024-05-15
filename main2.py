@@ -4,9 +4,9 @@ import pyautogui
 from ultralytics import YOLO
 import cvzone
 
-yoloModel = "best2.pt"
-myVideoUse = "Med.mp4"
-myFileUse = "coco2.txt"
+yoloModel = "Violbest.pt"
+myVideoUse = "fight1.mp4"
+myFileUse = "cocov.txt"
 
 model = YOLO(yoloModel) 
 
@@ -54,16 +54,16 @@ while not video_finished:
         
         c = class_list[d]
             
-        if "Knife" in c: 
+        if "Fight1" in c: 
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cvzone.putTextRect(frame, f'{c}', (x1, y1), 1, 1)
             
-        if "Pistol" in c: 
+        if "Fight2" in c: 
             cv2.rectangle(frame, (x1, y1), (x2, y2), (230, 240, 100), 2)
             cvzone.putTextRect(frame, f'{c}', (x1, y1), 1, 1)
         
     cv2.imshow("RGB", frame)
-    if cv2.waitKey(1) & 0xFF == 27:
+    if cv2.waitKey(30) & 0xFF == 27:
         break
 
 cap.release()  
