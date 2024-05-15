@@ -5,7 +5,7 @@ from ultralytics import YOLO
 import cvzone
 
 yoloModel = "Violbest.pt"
-myVideoUse = "fight1.mp4"
+myVideoUse = "Fight_M.mp4"
 myFileUse = "cocov.txt"
 
 model = YOLO(yoloModel) 
@@ -54,12 +54,12 @@ while not video_finished:
         
         c = class_list[d]
             
-        if "Fight1" in c: 
+        if "normal" in c: 
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cvzone.putTextRect(frame, f'{c}', (x1, y1), 1, 1)
             
-        if "Fight2" in c: 
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (230, 240, 100), 2)
+        if "fight" in c: 
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 250), 2)
             cvzone.putTextRect(frame, f'{c}', (x1, y1), 1, 1)
         
     cv2.imshow("RGB", frame)

@@ -1,2 +1,2 @@
-Fight1
-Fight2
+normal
+fight
