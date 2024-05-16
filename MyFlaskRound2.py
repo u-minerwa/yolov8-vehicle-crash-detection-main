@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 import cv2, pyautogui
 import pandas as pd
 import numpy as np 
-import datetime
+import datetime, json 
 from datetime import datetime
 from ultralytics import YOLO
 import cvzone
@@ -55,6 +55,7 @@ def process_network_1(myVideoUse):
     # Инициализируем статистику:
     statistics = {'Accident': 0, 'TrafficLight': 0, 'Car': 0, 'Sign': 0, 'TotalAccidents': 0} 
     video_finished = False
+    accidents_data = []  # Список для хранения данных о каждой аварии
 
     while not video_finished:    
         ret, frame = cap.read()
@@ -115,9 +116,24 @@ def process_network_1(myVideoUse):
                 if accidCount==1:
                     total_accident_frames += 1
                 
-                if accidCount==3:
-                    cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
-                    cv2.waitKey(waitKeyKoef) 
+                if accidCount==2:
+                    # Создаём словарь с данными об аварии: 
+                    accident_data = {
+                        "Statistics": {
+                            "Accident": statistics['Accident'],
+                            "TrafficLight": statistics['TrafficLight'],
+                            "Car": statistics['Car'],
+                            "Sign": statistics['Sign'],
+                            "TotalAccidents": total_accident_frames
+                        },
+                        "DateTime": dt_string
+                    }
+                    # Добавляем данные об аварии в список accidents_data
+                    accidents_data.append(accident_data)
+                
+                #if accidCount==3:
+                #    cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
+                #    cv2.waitKey(waitKeyKoef) 
                 
             if "TrafficLight" in c:
                 cv2.rectangle(frame,(x1,y1),(x2,y2),(17,249,249),2)
@@ -142,7 +158,7 @@ def process_network_1(myVideoUse):
 
     cap.release()
     cv2.destroyAllWindows()
-    return len(myVideoUse)
+    return len(myVideoUse), accidents_data  # Возвращаем длину видео и данные об авариях
 
 # По аналогии добавляем функции для остальных нейронных сетей...
 
@@ -610,25 +626,40 @@ def vlad():
 
 @app.route('/process_video', methods=['POST'])
 def process_video():
-    myVideo = "cr.mp4"
-    # myVideoUse = request.files[myVideo]
-    # if myVideo not in request.files:
-    #     return jsonify({'error': 'No video file provided aaaa!'}), 400
-    
+    myVideoUse = "cr.mp4"
+    # myVideoUse = request.files['video']
     # Обработка видео каждой из нейронных сетей
-    result_1 = process_network_1(myVideo)
-    # Аналогично для остальных нейронных сетей...
+    result_1, accidents_data = process_network_1(myVideoUse)
+    # Возвращаем результаты обработки в формате JSON
+    data = {
+        'result_1': result_1,
+        'accidents_data': accidents_data  # Добавляем данные об авариях в ответ
+        # Добавьте результаты для остальных нейронных сетей...
+    }
+    return jsonify(data)
 
+
+@app.route('/crash_car', methods=['POST'])
+def crash_car():
+    # Получаем файл видео из запроса
+    myVideoUse = request.files['video']
+    
+    # Получаем другие данные из запроса
+    form_data = request.form
+    param1 = form_data.get('param1')
+    param2 = form_data.get('param2')
+    # Получите остальные данные, если есть...
+    # Обрабатываем видео и данные
     # Возвращаем результаты обработки в формате JSON
     return jsonify({
-        'result_1': result_1,
-        # Добавьте результаты для остальных нейронных сетей...
+        'result': 'success'
     })
 
 
 @app.route('/')
 def index():
     return 'Hello, World!'
+
 
 if __name__ == '__main__':
     app.run(debug=True)

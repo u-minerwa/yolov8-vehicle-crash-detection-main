@@ -4,6 +4,7 @@ import numpy as np
 from datetime import datetime
 from ultralytics import YOLO
 import cvzone
+import json, os 
 import upd_stat_window
 
 yoloModel = "best.pt"
@@ -38,6 +39,7 @@ total_accident_frames = 0  # Общее количество кадров с а�
 # Инициализируем статистику:
 statistics = {'Accident': 0, 'TrafficLight': 0, 'Car': 0, 'Sign': 0, 'TotalAccidents': 0} 
 video_finished = False
+accidents_data = []  # Список для хранения данных о каждой аварии
 
 while not video_finished:    
     ret, frame = cap.read()
@@ -99,10 +101,44 @@ while not video_finished:
             if accidCount==1:
                 total_accident_frames += 1
                 
+            if accidCount==2:
+                # Путь к папке для сохранения файлов
+                save_folder = "AccidentJsons"
+                # Переменная, которая будет хранить порядковый номер
+                file_counter = 1
+                # Генерируем имя файла на основе текущей даты, времени и порядкового номера
+                def generate_file_name():
+                    now = datetime.now()
+                    dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
+                    return os.path.join(save_folder, f"data_{dt_string}_count_{file_counter}.json") 
+
+                # Создаём словарь с нужными данными: 
+                data_to_save = {
+                    "Statistics": {
+                        "Accident": statistics['Accident'],
+                        "TrafficLight": statistics['TrafficLight'],
+                        "Car": statistics['Car'],
+                        "Sign": statistics['Sign'],
+                        "TotalAccidents": total_accident_frames
+                    },
+                    "DateTime": dt_string
+                }
+
+                # Получаем имя файла
+                file_name = generate_file_name()
+
+                # Сохраняем данные в файл JSON
+                with open(file_name, 'w') as json_file:
+                    json.dump(data_to_save, json_file)
+
+                print("Json file saved:", file_name)
+                # Увеличиваем порядковый номер для следующего файла
+                file_counter += 1
+                
             if accidCount==3:
                 cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
                 cv2.waitKey(waitKeyKoef)
-        
+                
         if "TrafficLight" in c:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(17,249,249),2)
             cvzone.putTextRect(frame,f'{c}',(x1,y1),1,1) 
