@@ -29,7 +29,7 @@ my_file = open(myFileUse, 'r')
 data = my_file.read()
 class_list = data.split("\n")
 
-waitKeyKoef = 1
+waitKeyKoef = 60
 count = 0 
 accidCount = 0
 dtp_count = 0  # Переменная для подсчёта количества ДТП 
@@ -66,7 +66,14 @@ while not video_finished:
 
     # Отображаем статистику в окне
     stats_text = f"Accident: {statistics['Accident']}, TrafficLight: {statistics['TrafficLight']}, Car: {statistics['Car']}, Sign: {statistics['Sign']}, TotalAccidents: {total_accident_frames}" 
-    cv2.putText(frame, stats_text, (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+    cv2.putText(frame, stats_text, (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+    
+    # Получаем текущую дату и время:
+    now = datetime.now()
+    dt_string = now.strftime("%d-%m-%Y, Time: %H:%M:%S") 
+    # Добавляем текущую дату и время на кадр: 
+    cv2.putText(frame, f'Date: {dt_string}', (20, 480), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
     has_accident = False  # Переменная для отслеживания наличия аварии в текущем кадре
 
     for index,row in px.iterrows():
@@ -91,12 +98,10 @@ while not video_finished:
             print("Accident count:", accidCount)
             if accidCount==1:
                 total_accident_frames += 1
+                
+            if accidCount==3:
                 cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
                 cv2.waitKey(waitKeyKoef)
-            
-            # Получаем текущую дату и время
-            now = datetime.now()
-            dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
         
         if "TrafficLight" in c:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(17,249,249),2)
