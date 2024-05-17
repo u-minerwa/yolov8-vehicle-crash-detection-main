@@ -44,7 +44,8 @@ def process_network_1(myVideoUse):
 
     my_file = open(myFileUse, 'r')
     data = my_file.read()
-    class_list = data.split("\n")
+    # class_list = data.split("\n")
+    class_list = ["Car", "TrafficLight", "Sign", "Accident"]
 
     waitKeyKoef = 60 
     count = 0 
