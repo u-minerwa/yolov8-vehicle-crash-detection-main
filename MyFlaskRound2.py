@@ -8,7 +8,7 @@ import datetime, json
 from datetime import datetime
 from ultralytics import YOLO
 import cvzone
-from sort import Sort
+from BadCode.sort import Sort
 import math, time, os
 from torchfusion_utils.models import load_model, save_model
 import torch

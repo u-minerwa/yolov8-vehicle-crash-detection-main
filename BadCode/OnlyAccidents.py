@@ -4,7 +4,7 @@ from ultralytics import YOLO
 import cvzone
 
 # Initialize YOLO model
-model = YOLO("best.pt") 
+model = YOLO("Weights/best.pt") 
 
 # Mouse event callback function
 def RGB(event, x, y, flags, param):
@@ -17,10 +17,10 @@ cv2.namedWindow('RGB')
 cv2.setMouseCallback('RGB', RGB)
 
 # Open video file
-cap = cv2.VideoCapture("cr.mp4") 
+cap = cv2.VideoCapture("Videos/cr.mp4") 
 
 # Read class labels
-my_file = open("coco1.txt", 'r')
+my_file = open("TxtFiles/coco1.txt", 'r')
 data = my_file.read()
 class_list = data.split("\n") 
 

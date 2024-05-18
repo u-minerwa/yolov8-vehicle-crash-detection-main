@@ -4,7 +4,7 @@ import numpy as np
 from datetime import datetime
 from ultralytics import YOLO
 import cvzone
-import upd_stat_window
+import BadCode.upd_stat_window as upd_stat_window
 
 yoloModel = "best.pt"
 myVideoUse = "cr.mp4"

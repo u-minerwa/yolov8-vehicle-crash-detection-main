@@ -5,7 +5,7 @@ from datetime import datetime
 from ultralytics import YOLO
 import cvzone
 import json, os 
-import upd_stat_window
+
 
 yoloModel = "best.pt"
 myVideoUse = "cr.mp4"
