@@ -6,7 +6,7 @@ from ultralytics import YOLO
 import cvzone
 import json, os
 
-yoloModel = "bestAccidentDet.pt"
+yoloModel = "Weights/bestAccidentDet.pt"
 myVideoUse = "Videos/crash_1.mp4"
 model = YOLO(yoloModel) 
 
