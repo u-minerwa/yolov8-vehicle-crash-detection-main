@@ -182,8 +182,10 @@ while not video_finished:
         #image_path = os.path.join("incident_images", f"incident_{total_accident_frames}.jpg")
         #cv2.imwrite(image_path, frame)
         
-        image_path = os.path.join("incident_images", f"incident_{total_accident_frames}.jpg")
+        # Сохраняем кадр с ДТП в файл с датой и временем в названии
+        image_path = os.path.join("incident_images", f"accident_frame_{dt_string}_{dtp_count}_{total_accident_frames}.jpg")
         cv2.imwrite(image_path, frame)
+        # cv2.imwrite(f"AccidentFrames/accident_frame_{dt_string}_{dtp_count}.png", frame)
 
         # Store incident data along with the image path
         incident_data = (
