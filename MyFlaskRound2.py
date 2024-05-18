@@ -23,9 +23,9 @@ def process_network_1(myVideoUse):
     # Здесь должна быть реализация вашей нейронной сети
     # В этом примере просто выводим длительность видео
         
-    yoloModel = "best.pt"
-    myVideoUse = "cr.mp4"
-    myFileUse = "coco1.txt"
+    yoloModel = "Weights/best.pt"
+    myVideoUse = "Videos/cr.mp4"
+    myFileUse = "TxtFiles/coco1.txt"
     model = YOLO(yoloModel) 
 
     def WindowVideo(event, x, y, flags, param):
@@ -166,9 +166,9 @@ def process_network_1(myVideoUse):
 
 def process_network_2(myVideoUse): 
     
-    myVideoUse = "cars.mp4"
-    yoloModel = "yolov8l.pt"
-    maskPng = "mask.png"
+    myVideoUse = "Videos/cars.mp4"
+    yoloModel = "Weights/yolov8l.pt"
+    maskPng = "Videos/mask.png"
     
     # Загрузка видеофайла
     cap = cv2.VideoCapture(myVideoUse)
@@ -297,9 +297,9 @@ def process_network_2(myVideoUse):
 
 
 def process_network_3(myVideoUse):
-    yoloModel = "best2.pt"
-    myVideoUse = "Med.mp4"
-    myFileUse = "coco2.txt"
+    yoloModel = "Weights/best2.pt"
+    myVideoUse = "Videos/Med.mp4"
+    myFileUse = "TxtFiles/coco2.txt"
     model = YOLO(yoloModel) 
 
     def RGB(event, x, y, flags, param):
@@ -395,8 +395,8 @@ def process_network_4(myVideo):
             cv2.destroyAllWindows()
 
     def main():
-        myVideo = "fall.mp4"
-        myModel = "fall_det_1.pt"
+        myVideo = "Videos/fall.mp4"
+        myModel = "Weights/fall_det_1.pt" 
         
         model_path = myModel
         video_path = myVideo
@@ -507,9 +507,9 @@ def process_network_5(myVideo):
 
     if __name__ == "__main__":
         
-        myModelYolo = "yolov8x.pt"
-        myModelFire = "fire-yolov8.pt"
-        myVideo = "Fire2.mp4"
+        myModelYolo = "Weights/yolov8x.pt"
+        myModelFire = "Weights/fire-yolov8.pt"
+        myVideo = "Videos/Fire2.mp4"
         
         model_path = myModelFire
         fire_detection = FireDetection(model_path=model_path)
@@ -567,7 +567,7 @@ def process_network_5(myVideo):
 
 @app.route('/leshafire', methods=['POST'])
 def leshafire():
-    myVideo = "Fire2.mp4"
+    myVideo = "Videos/Fire2.mp4"
     
     # Обработка видео каждой из нейронных сетей
     result_5 = process_network_5(myVideo)
@@ -582,7 +582,7 @@ def leshafire():
 
 @app.route('/leshafall', methods=['POST'])
 def leshafall():
-    myVideo = "fall.mp4"
+    myVideo = "Videos/fall.mp4"
     
     # Обработка видео каждой из нейронных сетей
     result_4 = process_network_4(myVideo)
@@ -597,7 +597,7 @@ def leshafall():
 
 @app.route('/lesha', methods=['POST'])
 def lesha():
-    myVideo = "Med.mp4"
+    myVideo = "Videos/Med.mp4"
     
     # Обработка видео каждой из нейронных сетей
     result_3 = process_network_3(myVideo)
@@ -612,7 +612,7 @@ def lesha():
 
 @app.route('/vlad', methods=['POST'])
 def vlad():
-    myVideo = "cars.mp4"
+    myVideo = "Videos/cars.mp4"
     
     # Обработка видео каждой из нейронных сетей
     result_2 = process_network_2(myVideo)
@@ -627,7 +627,7 @@ def vlad():
 
 @app.route('/process_video', methods=['POST'])
 def process_video():
-    myVideoUse = "cr.mp4"
+    myVideoUse = "Videos/cr.mp4"
     # myVideoUse = request.files['video']
     # Обработка видео каждой из нейронных сетей
     result_1, accidents_data = process_network_1(myVideoUse)
