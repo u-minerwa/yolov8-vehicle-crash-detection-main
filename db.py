@@ -177,13 +177,14 @@ while not video_finished:
     if has_accident:
         now = datetime.now()
         dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+        dt_string_file = now.strftime("%Y-%m-%d_%H-%M-%S")
         
         # Save the frame as an image file
         #image_path = os.path.join("incident_images", f"incident_{total_accident_frames}.jpg")
         #cv2.imwrite(image_path, frame)
         
         # Сохраняем кадр с ДТП в файл с датой и временем в названии
-        image_path = os.path.join("incident_images", f"accident_frame_{dt_string}_{dtp_count}_{total_accident_frames}.jpg")
+        image_path = os.path.join("incident_images", f"accident_frame_{dt_string_file}_{dtp_count}_{total_accident_frames}.jpg")
         cv2.imwrite(image_path, frame)
         # cv2.imwrite(f"AccidentFrames/accident_frame_{dt_string}_{dtp_count}.png", frame)
 
