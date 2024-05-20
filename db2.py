@@ -4,7 +4,23 @@ import numpy as np
 from datetime import datetime
 from ultralytics import YOLO
 import cvzone
+import mysql.connector
 import json, os
+
+'''
+CREATE DATABASE incident_db;
+USE incident_db;
+
+CREATE TABLE incidents2 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    accident_count INT,
+    bike_count INT,
+    car_count INT,
+    person_count INT,
+    total_accidents INT,
+    datetime_recorded DATETIME
+);
+'''
 
 yoloModel = "Weights/bestAccidentDet.pt"
 myVideoUse = "Videos/crash_1.mp4"
@@ -39,6 +55,19 @@ total_accident_frames = 0  # Общее количество кадров с а�
 statistics = {"Accident": 0, "Bike": 0, "Car": 0, "Person": 0, "TotalAccidentFrames": 0}
 video_finished = False
 accidents_data = []  # Список для хранения данных о каждой аварии
+
+# MySQL database connection
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="incident_db"
+)
+cursor = db.cursor()
+
+# Create directory to save images
+if not os.path.exists("car_accident_images"):
+    os.makedirs("car_accident_images")
 
 while not video_finished:    
     ret, frame = cap.read()
@@ -171,8 +200,39 @@ while not video_finished:
     if cv2.waitKey(waitKeyKoef) & 0xFF == ord("q"):
         break
 
+    if has_accident:
+        now = datetime.now()
+        dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+        dt_string_file = now.strftime("%Y-%m-%d_%H-%M-%S")
+        
+        # Save the frame as an image file
+        #image_path = os.path.join("car_accident_images", f"incident_{total_accident_frames}.jpg")
+        #cv2.imwrite(image_path, frame)
+        
+        # Сохраняем кадр с ДТП в файл с датой и временем в названии
+        image_path = os.path.join("car_accident_images", f"accident_frame_{dt_string_file}_{dtp_count}_{total_accident_frames}.jpg")
+        cv2.imwrite(image_path, frame)
+        # cv2.imwrite(f"AccidentFrames/accident_frame_{dt_string}_{dtp_count}.png", frame)
+
+        # Store incident data along with the image path
+        incident_data = (
+            statistics['Accident'],
+            statistics['Bike'],
+            statistics['Car'],
+            statistics['Person'],
+            total_accident_frames,
+            dt_string,
+            image_path
+        )
+        
+        cursor.execute(
+            "INSERT INTO incidents2 (accident_count, bike_count, car_count, person_count, total_accidents, datetime_recorded, image_path) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            incident_data
+        )
+        db.commit()
 
 cap.release()  
 print("Total accident frames:", total_accident_frames)
 cv2.destroyAllWindows()
+db.close()
 

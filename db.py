@@ -1,3 +1,12 @@
+import cv2
+import pandas as pd
+import numpy as np 
+from datetime import datetime
+from ultralytics import YOLO
+import cvzone
+import json, os 
+import mysql.connector
+
 # DATABASE: 
 '''
 !pip install mysql-connector-python
@@ -17,18 +26,8 @@ CREATE TABLE incidents (
 );
 '''
 
-import cv2
-import pandas as pd
-import numpy as np 
-from datetime import datetime
-from ultralytics import YOLO
-import cvzone
-import json, os 
-import mysql.connector
-
 yoloModel = "Weights/best.pt"
 myVideoUse = "Videos/cr.mp4"
-myFileUse = "TxtFiles/coco1.txt"
 model = YOLO(yoloModel) 
 
 def WindowVideo(event, x, y, flags, param):
@@ -43,9 +42,6 @@ def WindowVideo(event, x, y, flags, param):
 cv2.namedWindow("Video")
 cv2.setMouseCallback("Video", WindowVideo)
 cap = cv2.VideoCapture(myVideoUse) 
-
-my_file = open(myFileUse, 'r')
-data = my_file.read()
 class_list = ["Car", "TrafficLight", "Sign", "Accident"] 
 
 waitKeyKoef = 60
@@ -124,6 +120,7 @@ while not video_finished:
             if accidCount==1:
                 total_accident_frames += 1
                 
+            '''
             if accidCount==2:
                 save_folder = "AccidentJsons"
                 file_counter = 1
@@ -150,10 +147,11 @@ while not video_finished:
 
                 print("Json file saved:", file_name)
                 file_counter += 1
-                
-            if accidCount==3:
-                cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
-                cv2.waitKey(waitKeyKoef)
+            '''
+            
+            #if accidCount==3:
+            #    cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
+            #    cv2.waitKey(waitKeyKoef)
                 
         if "TrafficLight" in c:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(17,249,249),2)
@@ -283,4 +281,9 @@ cursor.execute(
 )
 db.commit()
 
+'''
+
+'''
+USE incident_db;
+ALTER TABLE incidents ADD COLUMN image_path VARCHAR(255);
 '''

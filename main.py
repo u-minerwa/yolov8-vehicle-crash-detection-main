@@ -7,9 +7,8 @@ import cvzone
 import json, os 
 
 
-yoloModel = "best.pt"
-myVideoUse = "cr.mp4"
-myFileUse = "coco1.txt"
+yoloModel = "Weights/best.pt"
+myVideoUse = "Videos/cr.mp4"
 model = YOLO(yoloModel) 
 
 def WindowVideo(event, x, y, flags, param):
@@ -25,10 +24,6 @@ def WindowVideo(event, x, y, flags, param):
 cv2.namedWindow("Video")
 cv2.setMouseCallback("Video", WindowVideo)
 cap = cv2.VideoCapture(myVideoUse) 
-
-my_file = open(myFileUse, 'r')
-data = my_file.read()
-# class_list = data.split("\n")
 class_list = ["Car", "TrafficLight", "Sign", "Accident"] 
 
 waitKeyKoef = 60
@@ -104,16 +99,17 @@ while not video_finished:
                 
             if accidCount==2:
                 # Путь к папке для сохранения файлов
-                save_folder = "AccidentJsons"
+                # save_folder = "AccidentJsons"
                 # Переменная, которая будет хранить порядковый номер
-                file_counter = 1
+                # file_counter = 1
                 # Генерируем имя файла на основе текущей даты, времени и порядкового номера
-                def generate_file_name():
-                    now = datetime.now()
-                    dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
-                    return os.path.join(save_folder, f"data_{dt_string}_count_{file_counter}.json") 
+                # def generate_file_name():
+                #     now = datetime.now()
+                #     dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
+                #     return os.path.join(save_folder, f"data_{dt_string}_count_{file_counter}.json") 
 
                 # Создаём словарь с нужными данными: 
+                '''
                 data_to_save = {
                     "Statistics": {
                         "Accident": statistics['Accident'],
@@ -124,21 +120,18 @@ while not video_finished:
                     },
                     "DateTime": dt_string
                 }
-
+                '''
+                
                 # Получаем имя файла
-                file_name = generate_file_name()
+                # file_name = generate_file_name()
 
                 # Сохраняем данные в файл JSON
-                with open(file_name, 'w') as json_file:
-                    json.dump(data_to_save, json_file)
+                # with open(file_name, 'w') as json_file:
+                #     json.dump(data_to_save, json_file)
 
-                print("Json file saved:", file_name)
+                # print("Json file saved:", file_name)
                 # Увеличиваем порядковый номер для следующего файла
-                file_counter += 1
-                
-            if accidCount==3:
-                cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
-                cv2.waitKey(waitKeyKoef)
+                # file_counter += 1
                 
         if "TrafficLight" in c:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(17,249,249),2)
