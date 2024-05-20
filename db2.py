@@ -143,13 +143,8 @@ while not video_finished:
             dtp_count += 1
             accidCount += 1
             print("Accident count:", accidCount)
-            
             if accidCount==1:
-                total_accident_frames += 1
-                
-            if accidCount>=10:
-                has_accident = False
-                
+                total_accident_frames += 1 
                 
         if "Bike" in c:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(17,249,249),2)
