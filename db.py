@@ -26,6 +26,12 @@ CREATE TABLE incidents (
 );
 '''
 
+'''
+USE incident_db;
+ALTER TABLE incidents ADD COLUMN image_path VARCHAR(255);
+'''
+
+# CODE: 
 yoloModel = "Weights/best.pt"
 myVideoUse = "Videos/cr.mp4"
 model = YOLO(yoloModel) 
@@ -248,9 +254,4 @@ cursor.execute(
 )
 db.commit()
 
-'''
-
-'''
-USE incident_db;
-ALTER TABLE incidents ADD COLUMN image_path VARCHAR(255);
 '''

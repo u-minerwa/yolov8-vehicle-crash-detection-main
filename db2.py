@@ -7,6 +7,7 @@ import cvzone
 import mysql.connector
 import json, os
 
+# DATABASE: 
 '''
 CREATE DATABASE incident_db;
 USE incident_db;
@@ -22,6 +23,12 @@ CREATE TABLE incidents2 (
 );
 '''
 
+'''
+USE incident_db;
+ALTER TABLE incidents2 ADD COLUMN image_path VARCHAR(255);
+'''
+
+# CODE: 
 yoloModel = "Weights/bestAccidentDet.pt"
 myVideoUse = "Videos/crash_1.mp4"
 model = YOLO(yoloModel) 
