@@ -113,45 +113,12 @@ while not video_finished:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(0,0,255),2) 
             font = cv2.FONT_HERSHEY_PLAIN
             cv2.putText(frame, f'{c}', (x1, y1), font, 1.5, (0, 0, 255), 2, cv2.LINE_AA) 
-            
             dtp_count += 1
             accidCount += 1
             print("Accident count:", accidCount)
             if accidCount==1:
                 total_accident_frames += 1
                 
-            '''
-            if accidCount==2:
-                save_folder = "AccidentJsons"
-                file_counter = 1
-                def generate_file_name():
-                    now = datetime.now()
-                    dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
-                    return os.path.join(save_folder, f"data_{dt_string}_count_{file_counter}.json") 
-
-                data_to_save = {
-                    "Statistics": {
-                        "Accident": statistics['Accident'],
-                        "TrafficLight": statistics['TrafficLight'],
-                        "Car": statistics['Car'],
-                        "Sign": statistics['Sign'],
-                        "TotalAccidents": total_accident_frames
-                    },
-                    "DateTime": dt_string
-                }
-
-                file_name = generate_file_name()
-
-                with open(file_name, 'w') as json_file:
-                    json.dump(data_to_save, json_file)
-
-                print("Json file saved:", file_name)
-                file_counter += 1
-            '''
-            
-            #if accidCount==3:
-            #    cv2.imshow("Accident Frame "+f"{total_accident_frames}", frame)
-            #    cv2.waitKey(waitKeyKoef)
                 
         if "TrafficLight" in c:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(17,249,249),2)
