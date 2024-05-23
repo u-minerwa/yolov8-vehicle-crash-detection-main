@@ -44,6 +44,8 @@ cap = cv2.VideoCapture(myVideoUse)
 
 class_list = ["Bike", "Accident", "Accident", "Accident", "Car", "Accident", "Accident", "Accident", "Accident", "Person"]
 
+width = 1020
+height = 500
 waitKeyKoef = 60
 count = 0 
 accidCount = 0
@@ -82,7 +84,7 @@ while not video_finished:
     if count % 3 != 0:
         continue
     
-    frame = cv2.resize(frame, (1020, 500))
+    frame = cv2.resize(frame, (width, height))
     results = model.predict(frame)
     aa = results[0].boxes.data
     a = aa.cpu().detach().numpy()
@@ -126,6 +128,7 @@ while not video_finished:
         
         if "Accident" in c:
             has_accident = True
+            frame = cv2.rectangle(frame, (0, 0), (width - 1, height - 1), (0, 0, 255), 15) # red frame
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2) 
             font = cv2.FONT_HERSHEY_PLAIN
             cv2.putText(frame, f'{c}', (x1, y1), font, 1.5, (0, 0, 255), 2, cv2.LINE_AA) 
