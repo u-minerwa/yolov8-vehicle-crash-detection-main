@@ -44,13 +44,13 @@ if not os.path.exists("pistol_images"):
     os.makedirs("pistol_images")
 
 last_saved_time = time.time()  # Initialize last saved time
+frames_saved = 0
 
 while not video_finished:
     ret, frame = cap.read()
     
     if not ret:
         video_finished = True
-        # cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
         continue
 
     count += 1
@@ -81,30 +81,34 @@ while not video_finished:
             cvzone.putTextRect(frame, f'{c}', (x1, y1), 1, 1)
     
     current_time = time.time()
-    if has_accident and (current_time - last_saved_time >= 0.2):
-        last_saved_time = current_time  # Update last saved time
+    if has_accident and (current_time - last_saved_time < 1):
+        if frames_saved < 5:
+            frames_saved += 1
 
-        now = datetime.now()
-        dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-        dt_string_file = now.strftime("%Y-%m-%d_%H-%M-%S")
+            now = datetime.now()
+            dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+            dt_string_file = now.strftime("%Y-%m-%d_%H-%M-%S")
 
-        # Сохраняем кадр с пистолетом/ножом в файл с датой и временем в названии: 
-        image_path = os.path.join("pistol_images", f"neuro_{name_of_neuro}_and_datetime_{dt_string_file}.jpg")
-        cv2.imwrite(image_path, frame)
+            # Сохраняем кадр с пистолетом/ножом в файл с датой и временем в названии: 
+            image_path = os.path.join("pistol_images", f"neuro_{name_of_neuro}_and_datetime_{dt_string_file}.jpg")
+            cv2.imwrite(image_path, frame)
 
-        # Store incident data along with the image path
-        incident_data = (
-            name_of_neuro,
-            dt_string,
-            cam_id,
-            image_path
-        )
+            # Store incident data along with the image path
+            incident_data = (
+                name_of_neuro,
+                dt_string,
+                cam_id,
+                image_path
+            )
 
-        cursor.execute(
-            "INSERT INTO accidents (name_of_neuro, datetime_recorded, camera_id, image_path) VALUES (%s, %s, %s, %s)",
-            incident_data
-        )
-        db.commit()
+            cursor.execute(
+                "INSERT INTO accidents (name_of_neuro, datetime_recorded, camera_id, image_path) VALUES (%s, %s, %s, %s)",
+                incident_data
+            )
+            db.commit()
+    else:
+        last_saved_time = current_time  # Reset last saved time
+        frames_saved = 0  # Reset frames saved count
         
     cv2.imshow("RGB", frame)
     if cv2.waitKey(30) & 0xFF == ord("q"): 
