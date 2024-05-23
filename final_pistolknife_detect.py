@@ -10,6 +10,7 @@ import time
 yoloModel = "Weights/best2.pt"
 myVideoUse = "Videos/Med.mp4"
 name_of_neuro = "neuro_pistol"
+accid_count = 0
 cam_id = "3"
 model = YOLO(yoloModel) 
 width = 1020 
@@ -76,12 +77,17 @@ while not video_finished:
             
         if "Knife" in c or "Pistol" in c: 
             has_accident = True
+            if accid_count <= 1:
+                accid_count += 1
+            else:
+                accid_count = 1
+                
             frame = cv2.rectangle(frame, (0, 0), (width - 1, height - 1), (0, 0, 255), 15) # red frame
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0 if "Knife" in c else 250), 2)
             cvzone.putTextRect(frame, f'{c}', (x1, y1), 1, 1)
     
     current_time = time.time()
-    if has_accident and (current_time - last_saved_time >= 0.2):
+    if has_accident and (current_time - last_saved_time >= 0.5):
         last_saved_time = current_time  # Update last saved time
 
         now = datetime.now()
@@ -89,7 +95,7 @@ while not video_finished:
         dt_string_file = now.strftime("%Y-%m-%d_%H-%M-%S")
 
         # Сохраняем кадр с пистолетом/ножом в файл с датой и временем в названии: 
-        image_path = os.path.join("pistol_images", f"neuro_{name_of_neuro}_and_datetime_{dt_string_file}.jpg")
+        image_path = os.path.join("pistol_images", f"neuro_{name_of_neuro}_and_datetime_{dt_string_file}_{accid_count}.jpg")
         cv2.imwrite(image_path, frame)
 
         # Store incident data along with the image path
