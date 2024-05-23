@@ -113,9 +113,9 @@ def humanDetection(model, image):
 
 if __name__ == "__main__":
     
-    myModelYolo = "yolov8x.pt"
-    myModelFire = "fire-yolov8.pt"
-    myVideo = "Fire2.mp4"
+    myModelYolo = "Weights/yolov8x.pt"
+    myModelFire = "Weights/fire-yolov8.pt"
+    myVideo = "Videos/Fire2.mp4"
     
     model_path = myModelFire
     fire_detection = FireDetection(model_path=model_path)
