@@ -26,7 +26,7 @@ yoloModel = "Weights/best.pt"
 myVideoUse = "Videos/cr.mp4"
 model = YOLO(yoloModel)
 name_of_neuro = "neuro_car_crash_1"
-cam_id = "1"
+cam_id = 1
 
 def WindowVideo(event, x, y, flags, param):
     if event == cv2.EVENT_MOUSEMOVE:

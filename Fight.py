@@ -4,9 +4,8 @@ import pyautogui
 from ultralytics import YOLO
 import cvzone
 
-yoloModel = "Violbest.pt"
-myVideoUse = "Fight_M.mp4"
-myFileUse = "cocov.txt"
+yoloModel = "Weights/Violbest.pt"
+myVideoUse = "Videos/Fight_M.mp4"
 
 model = YOLO(yoloModel) 
 
@@ -19,10 +18,7 @@ cv2.namedWindow('RGB')
 cv2.setMouseCallback('RGB', RGB)
 
 cap = cv2.VideoCapture(myVideoUse) 
-
-my_file = open(myFileUse, 'r')
-data = my_file.read()
-class_list = data.split("\n") 
+class_list = ['normal', 'fight']
 
 count = 0
 video_finished = False
