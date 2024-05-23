@@ -24,6 +24,7 @@ cursor = db.cursor()
 def initialize_model(model_path):
     return YOLO(model_path)
 
+
 def process_video(video_path, model, camera_id, name_of_neuro):
     cap = cv2.VideoCapture(video_path)
     try:
@@ -38,20 +39,21 @@ def process_video(video_path, model, camera_id, name_of_neuro):
             cv2.imshow("YOLOv8 Tracking", annotated_frame)
 
             # Получаем текущее дата и время
-            dt_string = datetime.now().strftime("date_%Y-%m-%d_time_%H_%M_%S")
+            dt_string = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-            # Сохраняем кадр в папке
-            image_filename = f"{name_of_neuro}_{camera_id}_{dt_string}.jpg"
-            image_path = os.path.join(IMAGE_FOLDER, image_filename)
-            cv2.imwrite(image_path, frame)
+            if "Fall-Detected" in frame:
+                # Сохраняем кадр в папке
+                image_filename = f"{name_of_neuro}_{camera_id}_{dt_string}.jpg"
+                image_path = os.path.join(IMAGE_FOLDER, image_filename)
+                cv2.imwrite(image_path, frame)
 
-            # Добавляем данные в базу данных
-            incident_data = (name_of_neuro, dt_string, camera_id, image_path)
-            cursor.execute(
-                "INSERT INTO accidents (name_of_neuro, datetime_recorded, camera_id, image_path) VALUES (%s, %s, %s, %s)",
-                incident_data
-            )
-            db.commit()
+                # Добавляем данные в базу данных
+                incident_data = (name_of_neuro, dt_string, camera_id, image_path)
+                cursor.execute(
+                    "INSERT INTO accidents (name_of_neuro, datetime_recorded, camera_id, image_path) VALUES (%s, %s, %s, %s)",
+                    incident_data
+                )
+                db.commit()
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
@@ -60,6 +62,7 @@ def process_video(video_path, model, camera_id, name_of_neuro):
     finally:
         cap.release()
         cv2.destroyAllWindows()
+
 
 def main():
     myVideo = "Videos/fall.mp4"
