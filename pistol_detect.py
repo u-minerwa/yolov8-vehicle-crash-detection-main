@@ -126,3 +126,4 @@ while not video_finished:
 cap.release()  
 cv2.destroyAllWindows()
 db.close()
+
