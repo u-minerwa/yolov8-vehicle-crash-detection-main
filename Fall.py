@@ -18,9 +18,6 @@ def process_video(video_path, model):
             if not success:
                 break
 
-            timestamp = datetime.now().strftime("12:05:01")
-            print(f"Processing frame at {timestamp}")
-
             results = model.track(frame, persist=True, conf=0.5)
             annotated_frame = results[0].plot()
 
@@ -35,8 +32,10 @@ def process_video(video_path, model):
         cv2.destroyAllWindows()
 
 def main():
-    myVideo = "pm.mp4"
-    myModel = "fall_det_1.pt"
+    myVideo = "Videos/fall.mp4"
+    myModel = "Weights/fall_det_1.pt"
+    cam_id = 5
+    name_of_neuro = "fall_neuro_detect"
     
     model_path = myModel
     video_path = myVideo
@@ -46,3 +45,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
