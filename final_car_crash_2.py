@@ -12,7 +12,7 @@ import json, os
 CREATE DATABASE accidents_db;
 USE accidents_db;
 
-CREATE TABLE accidents2 (
+CREATE TABLE accidents (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name_of_neuro VARCHAR(50),
     datetime_recorded DATETIME,
@@ -175,7 +175,7 @@ while not video_finished:
             )
             
             cursor.execute(
-                "INSERT INTO accidents2 (name_of_neuro, datetime_recorded, camera_id, image_path) VALUES (%s, %s, %s, %s)",
+                "INSERT INTO accidents (name_of_neuro, datetime_recorded, camera_id, image_path) VALUES (%s, %s, %s, %s)",
                 incident_data
             )
             db.commit()
