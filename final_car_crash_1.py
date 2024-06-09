@@ -54,7 +54,7 @@ statistics = {'Accident': 0, 'TrafficLight': 0, 'Car': 0, 'Sign': 0, 'TotalAccid
 video_finished = False
 accidents_data = []
 
-# MySQL database connection
+# MySQL database connection:
 db = mysql.connector.connect(
     host="localhost",
     user="root",
